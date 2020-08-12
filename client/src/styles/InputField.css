@@ -1,0 +1,28 @@
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin: 1rem;
+}
+
+form input, form button {
+  border: none;
+  background: white;
+  outline: none;
+  padding: 0.5rem;
+  font-size: 2rem;
+}
+
+form button {
+  color: #fda66b;
+  background: white;
+  cursor: pointer;
+  width: 3.5rem;
+  transition: all 0.3s ease;
+}
+
+form button:hover {
+  background: #fda66b;
+  color: white;
+}
