@@ -1,52 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../styles/TaskList.css';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { setTasks, setUser } from '../actions';
+import { fetchTasks } from '../api/tasks';
+
 import Task from './Task';
-import { getTasks } from '../api';
 
-class TaskList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tasks: [],
+const TaskList = () => {
+  const dispatch = useDispatch();
+  const tasks = useSelector(state => state.tasks);
+  const filter = useSelector(state => state.filter);
+  const filteredTasks = tasks.filter(task => {
+    if (filter === 'COMPLETED') return task.completed;
+    if (filter === 'UNCOMPLETED') return !task.completed;
+    return true;
+  });
+
+  //Load tasks from db and pass them to global state
+  //any time component mounts
+  useEffect(() => {
+    async function loadTasks() {
+      const response = await fetchTasks(filter);
+      if (response.error) {
+        localStorage.removeItem('jwtToken');
+        dispatch(setUser({}));
+        return;
+      }
+      dispatch(setTasks(response));
     }
 
-    this.loadTasks = this.loadTasks.bind(this);
-  }
+    loadTasks();
+  }, []);
 
-  async loadTasks() {
-    const filteredTasks = await getTasks(this.props.filter);
-    this.setState({ tasks: filteredTasks });
-  }
-
-  async componentDidMount() {
-    await this.loadTasks();
-  }
-
-  async componentDidUpdate(prevProps) {
-    if (this.props.filter !== prevProps.filter) {
-      await this.loadTasks();
-    }
-  }
-
-  render() {
-    const tasks = this.state.tasks.map(task =>
-      <Task
-        id={task._id}
-        description={task.description}
-        completed={task.completed}
-        onChange={this.loadTasks}
-      />
-    );
-
-    return (
-      <div className="task-container">
-        <ul className="task-list">
-          {tasks}
-        </ul>
-      </div>
-    );
-  }
+  return (
+    <div className="task-container">
+      <ul className="task-list">
+        {filteredTasks.map(task =>
+          <Task
+            key={task._id}
+            _id={task._id}
+            description={task.description}
+            completed={task.completed}
+          />
+        )}
+      </ul>
+    </div>
+  );
 }
 
 export default TaskList;

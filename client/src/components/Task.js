@@ -1,49 +1,46 @@
 import React from 'react';
-import '../styles/Task.css';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckSquare, faTimesCircle, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { updateTask, deleteTask } from '../api';
+import '../styles/Task.css';
 
-class Task extends React.Component {
-  constructor(props) {
-    super(props);
+import { useDispatch } from 'react-redux';
+import { putTask, deleteTask } from '../api/tasks';
+import { updateTask, removeTask } from '../actions';
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+const Task = ({ _id, description, completed }) => {
+  const dispatch = useDispatch();
+
+  //Update task in global state and db
+  const handleChange = (event) => {
+    async function addTask() {
+      dispatch(updateTask({ _id, description, completed: !completed }));
+      await putTask(_id, { completed: !completed });
+    }
+
+    addTask();
   }
 
-  async handleChange() {
-    await updateTask(this.props.id, {
-      completed: !this.props.completed,
-    });
-    await this.props.onChange();
+  //Delete task from global state and db
+  const handleDelete = (event) => {
+    dispatch(removeTask(_id));
+    deleteTask(_id);
   }
 
-  async handleDelete() {
-    await deleteTask(this.props.id);
-    await this.props.onChange();
-  }
-
-  render() {
-    return (
-      <div className="task">
-        <li className="description">
-          {this.props.description}
-        </li>
-        <button
-          className={this.props.completed ? "completed-button" : "uncompleted-button"}
-          onClick={this.handleChange}>
-          <FontAwesomeIcon icon={this.props.completed ? faCheckSquare : faTimesCircle} />
-        </button>
-        <button
-          className="trash-button"
-          onClick={this.handleDelete}>
-          <FontAwesomeIcon icon={faTrash} />
-        </button>
-      </div>
-    );
-  }
+  return (
+    <li className="task">
+      <label className="description"> {description} </label>
+      <button
+        className={completed ? "completed-button" : "uncompleted-button"}
+        onClick={handleChange}>
+        <FontAwesomeIcon icon={completed ? faCheckSquare : faTimesCircle} />
+      </button>
+      <button
+        className="trash-button"
+        onClick={handleDelete}>
+        <FontAwesomeIcon icon={faTrash} />
+      </button>
+    </li>
+  );
 }
 
 export default Task;

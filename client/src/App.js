@@ -1,42 +1,21 @@
 import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './styles/App.css';
 
-import InputField from './components/InputField';
-import FilterBar from './components/FilterBar';
-import TaskList from './components/TaskList';
+import Home from './components/Home';
+import User from './components/User';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      filter: 'All',
-    };
-  }
-
-  handleFilterChange(event) {
-    this.setState({ filter: event.target.value });
-  }
-
-  render() {
-    return (
-      <body>
-        <header>
-          <h1> Todo List </h1>
-        </header>
-        <form>
-          <InputField />
-
-          <FilterBar
-            filter={this.state.filter}
-            onChange={event => this.handleFilterChange(event)}
-          />
-        </form>
-        <TaskList
-          filter={this.state.filter}
-        />
-      </body >
-    );
-  }
+const App = () => {
+  return (
+    <Router>
+      <div className="app">
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <Route path='/user' component={User} />
+        </Switch>
+      </div>
+    </Router>
+  );
 }
 
 export default App;

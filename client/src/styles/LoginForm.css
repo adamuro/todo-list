@@ -1,28 +1,33 @@
-form {
+.login-form {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   margin: 1rem;
 }
 
-form input, form button {
+.login-form input, .login-form button {
   border: none;
   background: white;
   outline: none;
   padding: 0.5rem;
   font-size: 2rem;
+  margin: 1vh;
 }
 
-form button {
-  color: #fda66b;
+.login-form button {
+  color: #ff893b;
   background: white;
   cursor: pointer;
-  width: 3.5rem;
   transition: all 0.3s ease;
 }
 
-form button:hover {
-  background: #fda66b;
+.login-form button:hover {
+  background: #ff893b;
   color: white;
+}
+
+.error-message {
+  color: red;
 }
